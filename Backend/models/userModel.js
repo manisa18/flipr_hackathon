@@ -25,18 +25,18 @@ const userSchema = new mongoose.Schema({
   gender: {
     type: String,
     required: [true, "Please Enter Your Gender"],
-    validate: ["male", "female", "non-binary"],
+    enum: ["male", "female", "non-binary"],
   },
   month: {
-    type: String,
+    type: Number,
     required: [true, "Please Enter Month"],
   },
   date: {
-    type: String,
+    type: Number,
     required: [true, "Please Enter Date"],
   },
   year: {
-    type: String,
+    type: Number,
     required: [true, "Please Enter Your Year"],
   },
   likedSongs: {
@@ -65,6 +65,14 @@ const userSchema = new mongoose.Schema({
   resetPasswordExpire: Date,
 });
 
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    next();
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+});
+
 userSchema.methods.getJWTToken = () => {
   return jwt.sign(
     { id: this._id, name: this.name, isAdmin: this.isAdmin },
@@ -73,6 +81,10 @@ userSchema.methods.getJWTToken = () => {
       expiresIn: process.env.JWT_EXPIRE,
     }
   );
+};
+
+userSchema.methods.comparePassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
 module.exports = mongoose.model("User", userSchema);
