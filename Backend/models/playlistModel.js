@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const songSchema = new mongoose.Schema({
   name: {
@@ -8,22 +9,23 @@ const songSchema = new mongoose.Schema({
     maxlength: [50, "Name cannot exceed 30 characters"],
     minlength: [3, "Name should have more than 3 characters"],
   },
-  artist: {
-    type: String,
-    required: [true, "Please Enter Artist Name"],
+  user: {
+    type: ObjectId,
+    ref: "user",
+    required: [true, "Please Enter User Id"],
   },
-  song: {
+  desc: {
     type: String,
-    required: [true, "Please Enter Song"],
+    allow: true,
+  },
+  songs: {
+    type: Array,
+    default: [],
   },
   img: {
     type: String,
-    required: true,
-  },
-  duration: {
-    type: String,
-    required: true,
+    allow: true,
   },
 });
 
-module.exports = mongoose.model("Song", songSchema);
+module.exports = mongoose.model("Playlist", songSchema);

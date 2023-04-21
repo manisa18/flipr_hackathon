@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Please Enter Your Year"],
   },
-  likedSongs: {
+  likedPodcast: {
     type: [String],
     default: [],
   },
@@ -57,9 +57,9 @@ const userSchema = new mongoose.Schema({
       required: true,
     },
   },
-  isAdmin: {
-    type: Boolean,
-    default: false,
+  roles: {
+    type: String,
+    default: "user",
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
